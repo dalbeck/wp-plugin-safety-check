@@ -249,39 +249,59 @@ function da_display_plugin_actions_log_page()
 
     $table_name = $wpdb->prefix . 'plugin_actions_log';
 
-    $search = (isset($_POST['s'])) ? sanitize_text_field($_POST['s']) : '';
+    // Get the current page number
+    $paged = isset($_GET['paged']) ? max(0, intval($_GET['paged']) - 1) : 0;
+
+    // Number of items per page
+    $per_page = get_option('da_plugin_actions_log_per_page', 10);
+
+    // Calculate the total number of pages and the offset
+    $total_items = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
+    $total_pages = ceil($total_items / $per_page);
+    $offset = $paged * $per_page;
+
+    // Fetch the items for the current page
+    $search = isset($_POST['s']) ? sanitize_text_field($_POST['s']) : '';
 
     $query = "SELECT * FROM $table_name";
     if ($search) {
         $query .= $wpdb->prepare(" WHERE user_id LIKE '%%%s%%' OR user_email LIKE '%%%s%%' OR timestamp LIKE '%%%s%%' OR plugin_name LIKE '%%%s%%' OR plugin_action LIKE '%%%s%%'", $search, $search, $search, $search, $search);
     }
-    $query .= " ORDER BY timestamp DESC";
+    $query .= $wpdb->prepare(" ORDER BY timestamp DESC LIMIT %d OFFSET %d", $per_page, $offset);
 
     $results = $wpdb->get_results($query, ARRAY_A);
 
     echo '<div class="wrap">';
-    echo '<h1>Plugin Action Log</h1>';
-    echo '<form method="post">';
-    echo '<p class="search-box">';
-    echo '<label class="screen-reader-text" for="plugin-search-input">Search Plugin Action Log:</label>';
-    echo '<input type="search" id="plugin-search-input" name="s" value="' . esc_attr($search) . '">';
-    echo '<input type="submit" id="search-submit" class="button" value="Search Plugin Action Log"></p>';
-    echo '</form>';
-    echo '<button id="export-csv" class="button">Export to CSV</button>';
-    echo '<table class="wp-list-table widefat fixed striped">';
-    echo '<thead><tr><th>User ID</th><th>User Email</th><th>Timestamp</th><th>Plugin Name</th><th>Plugin Action</th></tr></thead>';
-    echo '<tbody>';
-    foreach ($results as $row) {
-        echo '<tr>';
-        echo '<td>' . esc_html($row['user_id']) . '</td>';
-        echo '<td>' . esc_html($row['user_email']) . '</td>';
-        echo '<td>' . esc_html($row['timestamp']) . '</td>';
-        echo '<td>' . esc_html($row['plugin_name']) . '</td>';
-        echo '<td>' . esc_html($row['plugin_action']) . '</td>';
-        echo '</tr>';
-    }
-    echo '</tbody>';
-    echo '</table>';
+        echo '<h1>Plugin Action Log</h1>';
+        echo '<form method="post">';
+        echo '<p class="search-box">';
+            echo '<label class="screen-reader-text" for="plugin-search-input">Search Plugin Action Log:</label>';
+            echo '<input type="search" id="plugin-search-input" name="s" value="' . esc_attr($search) . '">';
+            echo '<input type="submit" id="search-submit" class="button" value="Search Plugin Action Log"></p>';
+        echo '</form>';
+        echo '<button id="export-csv" class="button">Export to CSV</button>';
+        echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>User ID</th><th>User Email</th><th>Timestamp</th><th>Plugin Name</th><th>Plugin Action</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($results as $row) {
+                echo '<tr>';
+                echo '<td>' . esc_html($row['user_id']) . '</td>';
+                echo '<td>' . esc_html($row['user_email']) . '</td>';
+                echo '<td>' . esc_html($row['timestamp']) . '</td>';
+                echo '<td>' . esc_html($row['plugin_name']) . '</td>';
+                echo '<td>' . esc_html($row['plugin_action']) . '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody>';
+        echo '</table>';
+            // Add pagination links
+            echo '<div class="tablenav">';
+                echo '<div class="tablenav-pages">';
+                for ($i = 1; $i <= $total_pages; $i++) {
+                    echo '<a href="?page=plugin-action-log&paged=' . $i . '"' . ($i === $paged + 1 ? ' class="current"' : '') . '>' . $i . '</a> ';
+                }
+                echo '</div>';
+            echo '</div>';
     echo '</div>';
 
     // JavaScript code for exporting the table data to CSV
