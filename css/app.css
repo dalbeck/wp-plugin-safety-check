@@ -1,0 +1,40 @@
+/* Pagination Container */
+.tablenav-pages {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+/* Pagination Links */
+.tablenav-pages a {
+    display: inline-block;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background-color: #f7f7f7;
+    text-decoration: none;
+    color: #0073aa;
+}
+
+/* Current Page */
+.tablenav-pages a.current {
+    background-color: #0073aa;
+    color: white;
+    border-color: #0073aa;
+}
+
+/* Hover Effect */
+.tablenav-pages a:hover {
+    background-color: #00a0d2;
+    border-color: #00a0d2;
+    color: white;
+}
+
+/* Responsive Adjustment */
+@media screen and (max-width: 600px) {
+    .tablenav-pages a {
+        padding: 3px 6px;
+        font-size: 12px;
+    }
+}
