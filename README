@@ -1,0 +1,42 @@
+# Plugin Actions Safety Feature
+
+**Plugin Actions Safety Feature** is a WordPress plugin designed to enhance the safety and accountability of plugin management on live WordPress sites. It introduces a warning modal for activating or deactivating plugins and logs these actions in a database, with the ability to export the log to CSV. This is particularly useful for managing "mission-critical" plugins on a live site.
+
+## Features
+
+- **Warning Modal**: Displays a warning modal when activating or deactivating a plugin, to prevent accidental changes.
+- **Action Logging**: Logs every activation or deactivation of plugins in a database table.
+- **CSV Export**: Provides the ability to export the plugin action log to a CSV file.
+- **Critical Plugin Protection**: Disables the deactivation link for specified "mission-critical" plugins.
+
+## Installation
+
+1. **Upload Plugin**: Upload the plugin files to the `/wp-content/mu-plugins/` directory, or install the plugin through the WordPress plugins screen directly.
+2. **Activate Plugin**: Activate the plugin through the 'Plugins' screen in WordPress.
+3. **Configure Critical Plugins**: Modify the `$critical_plugins` array in the `da_disable_deactivation` function to include your mission-critical plugins.
+4. **(Optional) Configure Modal Delay**: Modify the `countdown` variable in the `da_plugin_actions_speedbump` function to change the delay before the modal appears. Default setting is 10 seconds.
+
+## Usage
+
+- The plugin works automatically upon activation. The deactivation links for critical plugins will be disabled.
+- When attempting to activate or deactivate any plugin, a confirmation modal will appear.
+- The plugin actions log can be viewed under the 'Plugins' menu in the WordPress dashboard.
+- Use the 'Export to CSV' button on the Plugin Action Log page to export the log.
+
+## Development
+
+Developed by: Danny Albeck
+Website: [Albeck Consulting](https://www.albeckconsulting.com)
+Version: 1.0.0
+
+## License
+
+This plugin is licensed under the GPL v2 or later.
+
+## Contributions
+
+Contributions are welcome. Please adhere to WordPress coding standards when submitting patches or new features.
+
+---
+
+**Note**: This plugin is intended for use on live WordPress sites to manage critical plugins and enhance operational safety.
