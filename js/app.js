@@ -50,11 +50,11 @@
                     $('#countdown-message').text('Plugin ' + action + ' will complete in ' + countdown + ' seconds');
                     if (countdown <= 0) {
                         clearInterval(countdownInterval);
-                        $.post(da_ajax_object.ajax_url, {
+                        $.post(wp_ajax_object.ajax_url, {
                             action: 'log_plugin_' + action,
                             plugin_name: pluginName,
                             plugin_action: action,
-                            nonce: da_ajax_object.nonce
+                            nonce: wp_ajax_object.nonce
                         }, function(response) {
                             setTimeout(function() {
                                 window.location.href = actionUrl;

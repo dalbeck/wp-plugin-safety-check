@@ -4,7 +4,7 @@ Plugin Name: Plugin Actions Safetey Feature
 Description: Adds a warning modal when a user clicks the deactivate or activate link for a plugin. Also logs the activation or deactivation of a plugin in a database table with ability to export to CSV. This plugin is intended to be used on a live site to prevent accidental deactivation of "mission critical" plugins.
 Author: Danny Albeck
 Author URI: https://www.albeckconsulting.com
-Version: 1.0.0
+Version: 1.0.1
 Text Domain: plugin-actions-safety-feature
 Domain Path: /languages
 */
@@ -12,11 +12,11 @@ Domain Path: /languages
 /**
  * Initialize the plugin text domain for translation.
  */
-function da_plugin_actions_safety_feature_load_textdomain()
+function dawp_plugin_actions_safety_feature_load_textdomain()
 {
     load_plugin_textdomain('plugin-actions-safety-feature', false, basename(dirname(__FILE__)) . '/languages');
 }
-add_action('plugins_loaded', 'da_plugin_actions_safety_feature_load_textdomain');
+add_action('plugins_loaded', 'dawp_plugin_actions_safety_feature_load_textdomain');
 
 /**
  * Enqueues a custom script and localizes it for use on the 'plugins.php' admin page.
@@ -30,24 +30,22 @@ add_action('plugins_loaded', 'da_plugin_actions_safety_feature_load_textdomain')
  * @global string $pagenow The name of the current admin page.
  */
 
-function da_enqueue_scripts()
+function dawp_enqueue_scripts()
 {
-    $screen = get_current_screen();
+    global $pagenow;
 
-    // Check if the current screen is the plugins page
-    if ($pagenow == 'plugins.php' && (isset($_GET['page']) && $_GET['page'] == 'plugin-action-log')) {
-        wp_enqueue_script('da-custom-script', plugin_dir_url(__FILE__) . 'js/app.js', array('jquery'), null, true);
-
-        // Create a nonce and pass it to the script
-        wp_localize_script('da-custom-script', 'da_ajax_object', array(
+    // Check if the current page is plugins.php or the plugin-action-log page
+    if ($pagenow == 'plugins.php' && (empty($_GET['page']) || $_GET['page'] == 'plugin-action-log')) {
+        wp_enqueue_script('wp-custom-script', plugin_dir_url(__FILE__) . 'js/app.js', array('jquery'), null, true);
+        wp_localize_script('wp-custom-script', 'wp_ajax_object', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('da_nonce_action')
+            'nonce' => wp_create_nonce('wp_nonce_action')
         ));
-
-        wp_enqueue_style('da-custom-style', plugin_dir_url(__FILE__) . 'css/app.css');
+        wp_enqueue_style('wp-custom-style', plugin_dir_url(__FILE__) . 'css/app.css');
     }
 }
-add_action('admin_enqueue_scripts', 'da_enqueue_scripts');
+add_action('admin_enqueue_scripts', 'dawp_enqueue_scripts');
+
 
 /**
  * Disables the deactivation link for "mission critical" plugins.
@@ -59,7 +57,7 @@ add_action('admin_enqueue_scripts', 'da_enqueue_scripts');
  *
  * @return array $actions     Modified array of plugin action links.
  */
-function da_disable_deactivation($actions, $plugin_file)
+function dawp_disable_deactivation($actions, $plugin_file)
 {
     // Array of "mission critical" plugins - Define your plugins here to fully remove plugin actions
     $critical_plugins = array(
@@ -78,7 +76,7 @@ function da_disable_deactivation($actions, $plugin_file)
 
     return $actions;
 }
-add_filter('plugin_action_links', 'da_disable_deactivation', 10, 4);
+add_filter('plugin_action_links', 'dawp_disable_deactivation', 10, 4);
 
 /**
  * Creates a new database table to log interactions with the plugin deactivation.
@@ -86,10 +84,10 @@ add_filter('plugin_action_links', 'da_disable_deactivation', 10, 4);
  * @return void
  */
 
-function da_create_plugin_actions_log_table()
+function dawp_create_plugin_actions_log_table()
 {
     // Check if the table has already been created
-    if (get_option('da_plugin_actions_log_table_created') == false) {
+    if (get_option('dawp_plugin_actions_log_table_created') == false) {
         global $wpdb;
 
         $table_name = $wpdb->prefix . 'plugin_actions_log';
@@ -110,10 +108,10 @@ function da_create_plugin_actions_log_table()
         dbDelta($sql);
 
         // Set the option to indicate that the table has been created
-        update_option('da_plugin_actions_log_table_created', true);
+        update_option('dawp_plugin_actions_log_table_created', true);
     }
 }
-add_action('init', 'da_create_plugin_actions_log_table');
+add_action('init', 'dawp_create_plugin_actions_log_table');
 
 /**
  * Logs the activation or deactivation of a plugin.
@@ -121,13 +119,13 @@ add_action('init', 'da_create_plugin_actions_log_table');
  * @return void
  */
 
-function da_plugin_action_log()
+function dawp_plugin_action_log()
 {
     if (!current_user_can('manage_options')) {
-        wp_die(__('You do not have sufficient permissions to access this page.', 'plugin-actions-safety-feature'));
+        dawp_die(__('You do not have sufficient permissions to access this page.', 'plugin-actions-safety-feature'));
     }
 
-    check_ajax_referer('da_nonce_action', 'nonce');
+    check_ajax_referer('wp_nonce_action', 'nonce');
 
     global $wpdb;
 
@@ -146,8 +144,8 @@ function da_plugin_action_log()
 
     wp_die();
 }
-add_action('wp_ajax_log_plugin_activate', 'da_plugin_action_log');
-add_action('wp_ajax_log_plugin_deactivate', 'da_plugin_action_log');
+add_action('wp_ajax_log_plugin_activate', 'dawp_plugin_action_log');
+add_action('wp_ajax_log_plugin_deactivate', 'dawp_plugin_action_log');
 
 
 /**
@@ -155,7 +153,7 @@ add_action('wp_ajax_log_plugin_deactivate', 'da_plugin_action_log');
  *
  * @return void
  */
-function da_add_plugin_actions_log_page()
+function dawp_add_plugin_actions_log_page()
 {
     add_submenu_page(
         'plugins.php',
@@ -163,17 +161,17 @@ function da_add_plugin_actions_log_page()
         'Plugin Action Log',
         'manage_options',
         'plugin-action-log',
-        'da_display_plugin_actions_log_page'
+        'dawp_display_plugin_actions_log_page'
     );
 }
-add_action('admin_menu', 'da_add_plugin_actions_log_page');
+add_action('admin_menu', 'dawp_add_plugin_actions_log_page');
 
 /**
  * Displays the Plugin Action Log page.
  *
  * @return void
  */
-function da_display_plugin_actions_log_page()
+function dawp_display_plugin_actions_log_page()
 {
     global $wpdb;
 
@@ -183,7 +181,7 @@ function da_display_plugin_actions_log_page()
     $paged = isset($_GET['paged']) ? max(0, intval($_GET['paged']) - 1) : 0;
 
     // Number of items per page
-    $per_page = get_option('da_plugin_actions_log_per_page', 10);
+    $per_page = get_option('dawp_plugin_actions_log_per_page', 10);
 
     // Calculate the total number of pages and the offset
     $total_items = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
