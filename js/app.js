@@ -1,80 +1,103 @@
-    jQuery(document).ready(function($) {
-        // Handle deactivation and activation
-        $('.deactivate a, .activate a').click(function(e) {
-            e.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to handle click event
+    function handleClick(e) {
+        e.preventDefault();
 
-            // Store the URL of the deactivate or activate link
-            var actionUrl = $(this).attr('href');
+        // Store the URL of the deactivate or activate link
+        var actionUrl = this.getAttribute('href');
 
-            // Get the plugin name
-            var pluginName = $(this).closest('tr').find('strong').text();
+        // Get the plugin name
+        var pluginName = this.closest('tr').querySelector('strong').textContent;
 
-            // Determine the action (activate or deactivate)
-            var action = $(this).parent().hasClass('activate') ? 'activate' : 'deactivate';
+        // Determine the action (activate or deactivate)
+        var action = this.parentElement.classList.contains('activate') ? 'activate' : 'deactivate';
 
-            // Get the domain URL
-            var domainUrl = window.location.hostname;
+        // Get the domain URL
+        var domainUrl = window.location.hostname;
 
-            // Create the modal
-            var modalHtml = '<div id=\"action-warning-modal\" style=\"display: none; background: rgba(0, 0, 0, 0.8); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999;\">';
-            modalHtml += '<div style=\"background: white; border-radius: 5px; padding: 20px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; max-width: 90%; box-sizing: border-box; text-align: center;\">';
-            modalHtml += '<h1 style=\"color: red; margin-bottom: 20px;\">WARNING</h1>';
-            modalHtml += '<p style=\"font-size: 16px; margin-bottom: 20px;\">Are you sure you want to <strong style=\"color: blue;\">' + action + '</strong> the <strong style=\"color: blue;\">' + pluginName + '</strong> plugin on <strong style=\"color: blue;\">' + domainUrl + '</strong>?</p>';
-            modalHtml += '<button id=\"proceed-action\" style=\"background: ' + (action == 'activate' ? 'green' : 'red') + '; border: none; color: white; padding: 10px 20px; margin-right: 10px; cursor: pointer;\">' + (action.charAt(0).toUpperCase() + action.slice(1)) + ' Plugin</button>';
-            modalHtml += '<button id=\"cancel-action\" style=\"background: gray; border: none; color: white; padding: 10px 20px; cursor: pointer;\">Deny</button>';
-            modalHtml += '<p id=\"countdown-message\" style=\"display: none; margin-top: 20px;\"></p>';
-            modalHtml += '<a id=\"cancel-countdown\" style=\"display: none; margin-top: 20px; color: red; font-size: 15px; font-weight: bold; cursor: pointer;\">Cancel</a>';
-            modalHtml += '</div></div>';
+        // Create the modal
+        var modalHtml = '<div id="action-warning-modal">' +
+                            '<div id="modal-content">' +
+                                '<h1 id="modal-header">WARNING</h1>' +
+                                '<p id="modal-body">Are you sure you want to <strong>' + action + '</strong> the <strong>' + pluginName + '</strong> plugin on <strong>' + domainUrl + '</strong>?</p>' +
+                                '<button id="proceed-action">' + (action.charAt(0).toUpperCase() + action.slice(1)) + ' Plugin</button>' +
+                                '<button id="cancel-action">Deny</button>' +
+                                '<p id="countdown-message"></p>' +
+                                '<a id="cancel-countdown">Cancel</a>' +
+                            '</div>' +
+                        '</div>';
 
-            // Add the modal to the body
-            $('body').append(modalHtml);
+        // Add the modal to the body
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-            // Prevent scrolling
-            $('body').css('overflow', 'hidden');
+        // Prevent scrolling
+        document.body.style.overflow = 'hidden';
 
-            // Show the modal
-            $('#action-warning-modal').show();
+        var proceedAction = document.getElementById('proceed-action');
+        var cancelAction = document.getElementById('cancel-action');
+        var countdownMessage = document.getElementById('countdown-message');
+        var cancelCountdown = document.getElementById('cancel-countdown');
+        var modal = document.getElementById('action-warning-modal');
 
-            // If the user chooses to proceed, send an AJAX request and then redirect to the action URL
-            $('#proceed-action').click(function() {
-                $(this).prop('disabled', true);
-                $('#cancel-action').hide();
-                $(this).hide();
+        // Show the modal
+        modal.style.display = 'block';
 
-                var countdown = 10;
-                $('#countdown-message').text('Plugin ' + action + ' will complete in ' + countdown + ' seconds').show();
-                $('#cancel-countdown').show();
+        // If the user chooses to proceed
+        proceedAction.addEventListener('click', function() {
+            proceedAction.disabled = true;
+            cancelAction.style.display = 'none';
+            proceedAction.style.display = 'none';
 
-                var countdownInterval = setInterval(function() {
-                    countdown--;
-                    $('#countdown-message').text('Plugin ' + action + ' will complete in ' + countdown + ' seconds');
-                    if (countdown <= 0) {
-                        clearInterval(countdownInterval);
-                        $.post(wp_ajax_object.ajax_url, {
-                            action: 'log_plugin_' + action,
-                            plugin_name: pluginName,
-                            plugin_action: action,
-                            nonce: wp_ajax_object.nonce
-                        }, function(response) {
-                            setTimeout(function() {
-                                window.location.href = actionUrl;
-                            }, 3000);
-                        });
-                    }
-                }, 1000);
+            var countdown = 10;
+            countdownMessage.textContent = 'Plugin ' + action + ' will complete in ' + countdown + ' seconds';
+            countdownMessage.style.display = 'block';
+            cancelCountdown.style.display = 'block';
 
-                // If the user chooses to cancel the countdown, stop the countdown and hide the modal
-                $('#cancel-countdown').click(function() {
+            var countdownInterval = setInterval(function() {
+                countdown--;
+                countdownMessage.textContent = 'Plugin ' + action + ' will complete in ' + countdown + ' seconds';
+                if (countdown <= 0) {
                     clearInterval(countdownInterval);
-                    $('#action-warning-modal').remove();
-                    $('body').css('overflow', 'auto');
-                });
-            });
-
-            // If the user chooses to cancel, hide the modal and allow scrolling
-            $('#cancel-action').click(function() {
-                $('#action-warning-modal').remove();
-                $('body').css('overflow', 'auto');
-            });
+                    // AJAX request
+                    fetch(wp_ajax_object.ajax_url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                        },
+                        body: 'action=log_plugin_' + action + '&plugin_name=' + encodeURIComponent(pluginName) + '&plugin_action=' + action + '&nonce=' + wp_ajax_object.nonce
+                    })
+                    .then(function(response) {
+                        setTimeout(function() {
+                            window.location.href = actionUrl;
+                        }, 3000);
+                    });
+                }
+            }, 1000);
         });
+
+        // If the user chooses to cancel the countdown
+        cancelCountdown.addEventListener('click', function() {
+            clearInterval(countdownInterval);
+            modal.parentNode.removeChild(modal);
+            document.body.style.overflow = 'auto';
+        });
+
+        // If the user chooses to cancel
+        cancelAction.addEventListener('click', function() {
+            modal.parentNode.removeChild(modal);
+            document.body.style.overflow = 'auto';
+        });
+    }
+
+    // Attach event listeners to activate and deactivate links
+    var deactivateLinks = document.querySelectorAll('.deactivate a');
+    var activateLinks = document.querySelectorAll('.activate a');
+
+    deactivateLinks.forEach(function(link) {
+        link.addEventListener('click', handleClick);
     });
+
+    activateLinks.forEach(function(link) {
+        link.addEventListener('click', handleClick);
+    });
+});

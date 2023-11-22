@@ -36,7 +36,7 @@ function dawp_enqueue_scripts()
 
     // Check if the current page is plugins.php or the plugin-action-log page
     if ($pagenow == 'plugins.php' && (empty($_GET['page']) || $_GET['page'] == 'plugin-action-log')) {
-        wp_enqueue_script('wp-custom-script', plugin_dir_url(__FILE__) . 'js/app.js', array('jquery'), null, true);
+        wp_enqueue_script('wp-custom-script', plugin_dir_url(__FILE__) . 'js/app.js', null, null, true);
         wp_localize_script('wp-custom-script', 'wp_ajax_object', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('wp_nonce_action')

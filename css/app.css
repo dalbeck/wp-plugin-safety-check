@@ -38,3 +38,76 @@
         font-size: 12px;
     }
 }
+
+/* Modal Styles */
+#action-warning-modal {
+    display: none;
+    background: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+}
+
+#modal-content {
+    background: white;
+    border-radius: 5px;
+    padding: 20px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    max-width: 90%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#modal-header {
+    color: red;
+    margin-bottom: 20px;
+}
+
+#modal-body {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+#proceed-action,
+#cancel-action {
+    background: green;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#cancel-action {
+    background: gray;
+}
+
+#countdown-message {
+    display: none;
+    margin-top: 20px;
+}
+
+#cancel-countdown {
+    display: none;
+    margin-top: 20px;
+    color: red;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Specific styles for the activate and deactivate buttons */
+#proceed-action.activate {
+    background: green;
+}
+
+#proceed-action.deactivate {
+    background: red;
+}
