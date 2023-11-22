@@ -42,7 +42,7 @@
 /* Modal Styles */
 #action-warning-modal {
     display: none;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(24, 24, 27, .98);
     position: fixed;
     top: 0;
     left: 0;
@@ -59,15 +59,17 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 300px;
-    max-width: 90%;
+    width: 500px;
+    max-width: 100%;
     box-sizing: border-box;
     text-align: center;
 }
 
 #modal-header {
-    color: red;
+    color: rgb(244, 23, 0);
+    font-weight: 700;
     margin-bottom: 20px;
+    text-transform: uppercase;
 }
 
 #modal-body {

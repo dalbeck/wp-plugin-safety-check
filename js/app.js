@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Function to handle click event
+    var countdownInterval; // Define countdownInterval in a higher scope
+
     function handleClick(e) {
         e.preventDefault();
 
@@ -18,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create the modal
         var modalHtml = '<div id="action-warning-modal">' +
                             '<div id="modal-content">' +
-                                '<h1 id="modal-header">WARNING</h1>' +
+                                '<h1 id="modal-header">Attention</h1>' +
                                 '<p id="modal-body">Are you sure you want to <strong>' + action + '</strong> the <strong>' + pluginName + '</strong> plugin on <strong>' + domainUrl + '</strong>?</p>' +
                                 '<button id="proceed-action">' + (action.charAt(0).toUpperCase() + action.slice(1)) + ' Plugin</button>' +
                                 '<button id="cancel-action">Deny</button>' +
@@ -44,16 +45,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // If the user chooses to proceed
         proceedAction.addEventListener('click', function() {
-            proceedAction.disabled = true;
+            this.disabled = true;
             cancelAction.style.display = 'none';
-            proceedAction.style.display = 'none';
+            this.style.display = 'none';
 
             var countdown = 10;
             countdownMessage.textContent = 'Plugin ' + action + ' will complete in ' + countdown + ' seconds';
             countdownMessage.style.display = 'block';
             cancelCountdown.style.display = 'block';
 
-            var countdownInterval = setInterval(function() {
+            countdownInterval = setInterval(function() {
                 countdown--;
                 countdownMessage.textContent = 'Plugin ' + action + ' will complete in ' + countdown + ' seconds';
                 if (countdown <= 0) {
