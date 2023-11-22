@@ -86,32 +86,36 @@ add_filter('plugin_action_links', 'dawp_disable_deactivation', 10, 4);
 
 function dawp_create_plugin_actions_log_table()
 {
-    // Check if the table has already been created
-    if (get_option('dawp_plugin_actions_log_table_created') == false) {
-        global $wpdb;
+    global $wpdb;
 
-        $table_name = $wpdb->prefix . 'plugin_actions_log';
-
-        $charset_collate = $wpdb->get_charset_collate();
-
-        $sql = "CREATE TABLE $table_name (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            user_id mediumint(9) NOT NULL,
-            user_email varchar(100) NOT NULL,
-            timestamp datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-            plugin_name text NOT NULL,
-            plugin_action varchar(20) NOT NULL,
-            PRIMARY KEY  (id)
-        ) $charset_collate;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-
-        // Set the option to indicate that the table has been created
-        update_option('dawp_plugin_actions_log_table_created', true);
+    // Check if the table creation flag is already set
+    if (get_option('dawp_plugin_actions_log_table_created')) {
+        return;
     }
+
+    $table_name = $wpdb->prefix . 'plugin_actions_log';
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        user_id mediumint(9) NOT NULL,
+        user_email varchar(100) NOT NULL,
+        timestamp datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        plugin_name varchar(255) NOT NULL,
+        plugin_action varchar(20) NOT NULL,
+        PRIMARY KEY  (id),
+        INDEX idx_user_id (user_id),
+        INDEX idx_plugin_name (plugin_name(191)),
+        INDEX idx_timestamp (timestamp)
+    ) $charset_collate;";
+
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+
+    // Set the option that the table has been created
+    update_option('dawp_plugin_actions_log_table_created', true);
 }
-add_action('init', 'dawp_create_plugin_actions_log_table');
+add_action('admin_init', 'dawp_create_plugin_actions_log_table');
 
 /**
  * Logs the activation or deactivation of a plugin.
@@ -268,3 +272,33 @@ function dawp_display_plugin_actions_log_page()
     </script>
     ";
 }
+
+/**
+ * Handles the uninstallation of the plugin.
+ *
+ * This function is triggered when the plugin is uninstalled from the WordPress admin dashboard.
+ * It removes the '_plugin_actions_log' table from the database, cleaning up the data created by the plugin.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ */
+
+function dawp_uninstall_plugin()
+{
+    global $wpdb;
+
+    // Table name
+    $table_name = $wpdb->prefix . 'plugin_actions_log';
+
+    // SQL to delete table
+    $sql = "DROP TABLE IF EXISTS {$table_name};";
+
+    // Execute the query
+    $wpdb->query($sql);
+
+    // Delete the option indicating the table was created
+    delete_option('dawp_plugin_actions_log_table_created');
+
+}
+
+// Register the uninstall hook
+register_uninstall_hook(__FILE__, 'dawp_uninstall_plugin');
