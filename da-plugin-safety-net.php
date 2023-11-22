@@ -18,42 +18,6 @@ function da_plugin_actions_safety_feature_load_textdomain()
 }
 add_action('plugins_loaded', 'da_plugin_actions_safety_feature_load_textdomain');
 
-<<<<<<< Updated upstream
-=======
-/**
- * Enqueues a custom script and localizes it for use on the 'plugins.php' admin page.
- *
- * This function is hooked into the 'admin_enqueue_scripts' action and is responsible
- * for enqueuing the 'da-custom-script' JavaScript file, which is only loaded on the
- * 'plugins.php' page in the WordPress admin area. It also localizes the script, passing
- * the URL for AJAX requests and a security nonce for use in AJAX calls to ensure the
- * request is valid and coming from the correct place.
- *
- * @global string $pagenow The name of the current admin page.
- */
-
-function da_enqueue_scripts()
-{
-    global $pagenow;
-
-    // Check if the current page is plugins.php and if the 'page' query parameter is set to 'plugin-action-log'
-    if ($pagenow == 'plugins.php' && (isset($_GET['page']) && $_GET['page'] == 'plugin-action-log')) {
-        // Enqueue the JavaScript file
-        wp_enqueue_script('da-custom-script', plugin_dir_url(__FILE__) . 'js/app.js', array('jquery'), null, true);
-
-        // Create a nonce and pass it to the script
-        wp_localize_script('da-custom-script', 'da_ajax_object', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('da_nonce_action')
-        ));
-
-        // Enqueue the CSS file
-        wp_enqueue_style('da-custom-style', plugin_dir_url(__FILE__) . 'css/app.css');
-    }
-}
-add_action('admin_enqueue_scripts', 'da_enqueue_scripts', 20);
-
->>>>>>> Stashed changes
 
 /**
  * Disables the deactivation link for "mission critical" plugins.
