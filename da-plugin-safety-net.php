@@ -35,7 +35,7 @@ function da_enqueue_scripts()
     $screen = get_current_screen();
 
     // Check if the current screen is the plugins page
-    if (isset($screen->base) && $screen->base == 'plugins') {
+    if ($pagenow == 'plugins.php' && (isset($_GET['page']) && $_GET['page'] == 'plugin-action-log')) {
         wp_enqueue_script('da-custom-script', plugin_dir_url(__FILE__) . 'js/app.js', array('jquery'), null, true);
 
         // Create a nonce and pass it to the script
@@ -43,6 +43,8 @@ function da_enqueue_scripts()
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('da_nonce_action')
         ));
+
+        wp_enqueue_style('da-custom-style', plugin_dir_url(__FILE__) . 'css/app.css');
     }
 }
 add_action('admin_enqueue_scripts', 'da_enqueue_scripts');
