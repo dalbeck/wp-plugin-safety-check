@@ -196,10 +196,25 @@ function dawp_display_plugin_actions_log_page()
     $search = isset($_POST['s']) ? sanitize_text_field($_POST['s']) : '';
 
     $query = "SELECT * FROM $table_name";
+    $whereClauses = array();
+
     if ($search) {
-        $query .= $wpdb->prepare(" WHERE user_id LIKE '%%%s%%' OR user_email LIKE '%%%s%%' OR timestamp LIKE '%%%s%%' OR plugin_name LIKE '%%%s%%' OR plugin_action LIKE '%%%s%%'", $search, $search, $search, $search, $search);
+        // Add conditions for string-type fields
+        $whereClauses[] = $wpdb->prepare("user_id LIKE '%%%s%%'", $search);
+        $whereClauses[] = $wpdb->prepare("user_email LIKE '%%%s%%'", $search);
+        $whereClauses[] = $wpdb->prepare("plugin_name LIKE '%%%s%%'", $search);
+        $whereClauses[] = $wpdb->prepare("plugin_action LIKE '%%%s%%'", $search);
+
+        // Check if $search is a date and add timestamp condition if it is
+        if (strtotime($search) !== false) {
+            $whereClauses[] = $wpdb->prepare("timestamp LIKE '%%%s%%'", $search);
+        }
+
+        $query .= " WHERE " . join(' OR ', $whereClauses);
     }
-    $query .= $wpdb->prepare(" ORDER BY timestamp DESC LIMIT %d OFFSET %d", $per_page, $offset);
+
+    $query .= " ORDER BY timestamp DESC";
+    $query .= $wpdb->prepare(" LIMIT %d OFFSET %d", $per_page, $offset);
 
     $results = $wpdb->get_results($query, ARRAY_A);
 
