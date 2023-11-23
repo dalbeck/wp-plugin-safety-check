@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     var countdownInterval; // Define countdownInterval in a higher scope
+    var modalTimeout = dawpModalData.timeout || 10000; // Use the timeout from PHP, default to 10000
 
     function handleClick(e) {
         e.preventDefault();
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             '<div id="modal-content">' +
                                 '<h1 id="modal-header">Attention</h1>' +
                                 '<p id="modal-body">Are you sure you want to <strong>' + action + '</strong> the <strong>' + pluginName + '</strong> plugin on <strong>' + domainUrl + '</strong>?</p>' +
-                                '<button id="proceed-action">' + (action.charAt(0).toUpperCase() + action.slice(1)) + ' Plugin</button>' +
+                                '<button class="'+ action +'" id="proceed-action">' + (action.charAt(0).toUpperCase() + action.slice(1)) + ' Plugin</button>' +
                                 '<button id="cancel-action">Deny</button>' +
                                 '<p id="countdown-message"></p>' +
                                 '<a id="cancel-countdown">Cancel</a>' +
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cancelAction.style.display = 'none';
             this.style.display = 'none';
 
-            var countdown = 10;
+            var countdown = modalTimeout / 1000;
             countdownMessage.textContent = 'Plugin ' + action + ' will complete in ' + countdown + ' seconds';
             countdownMessage.style.display = 'block';
             cancelCountdown.style.display = 'block';
@@ -60,20 +61,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (countdown <= 0) {
                     clearInterval(countdownInterval);
                     // AJAX request
-                    fetch(wp_ajax_object.ajax_url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                        },
-                        body: 'action=log_plugin_' + action + '&plugin_name=' + encodeURIComponent(pluginName) + '&plugin_action=' + action + '&nonce=' + wp_ajax_object.nonce
-                    })
-                    .then(function(response) {
-                        setTimeout(function() {
+                        fetch(dawpModalData.ajax_url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                            },
+                            body: 'action=log_plugin_' + action + '&plugin_name=' + encodeURIComponent(pluginName) + '&plugin_action=' + action + '&nonce=' + dawpModalData.nonce
+                        })
+                        .then(function(response) {
+                            // Redirect to action URL
                             window.location.href = actionUrl;
-                        }, 3000);
-                    });
-                }
-            }, 1000);
+                        })
+                        .catch(function(error) {
+                            console.error('Error:', error);
+                            alert('An error occurred. Please try again.');
+                            modal.parentNode.removeChild(modal);
+                            document.body.style.overflow = 'auto';
+                        });
+                    }
+                }, 1000);
         });
 
         // If the user chooses to cancel the countdown
