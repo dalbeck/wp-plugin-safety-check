@@ -19,7 +19,7 @@ class MissionCriticalPlugins
     {
         // Default critical plugins
         $critical_plugins = [
-            'wp-plugin-safety-check/wp-plugin-safety-feature.php'
+            'wp-action-safety-check/wp-action-safety-feature.php'
         ];
 
         /**

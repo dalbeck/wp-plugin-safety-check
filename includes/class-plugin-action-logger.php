@@ -21,7 +21,7 @@ class PluginActionLogger
     public static function log_action()
     {
         if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have sufficient permissions to access this page.', 'plugin-actions-safety-feature'));
+            wp_die(__('You do not have sufficient permissions to access this page.', 'actions-safety-feature'));
         }
 
         check_ajax_referer('wp_nonce_action', 'nonce');

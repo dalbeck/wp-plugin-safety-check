@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Plugin Name: Plugin Actions Safety Feature
+ * Plugin Name: Actions Safety Feature
  * Description: Enhance plugin management safety on WordPress sites with the Plugin Actions Safety Feature. This plugin introduces a warning modal for critical plugin activations/deactivations, logs these actions for accountability, and supports CSV exports of the log. It also includes a purging feature for log management and protects mission-critical plugins from accidental deactivation, including bulk action prevention. Optionally extendable for custom purge timelines and modal timeouts.
  * Author: Danny Albeck
  * Author URI: https://github.com/dalbeck/
- * Version: 1.2.0
- * Text Domain: plugin-actions-safety-feature
+ * Version: 1.2.1
+ * Text Domain: actions-safety-feature
  * Domain Path: /languages
  * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -32,10 +32,10 @@ if (!defined('WPINC')) {
 }
 
 // Define plugin version constant.
-define('PLUGIN_ACTION_SAFETY_FEATURE_VERSION', '1.2.0');
+define('ACTION_SAFETY_FEATURE_VERSION', '1.2.1');
 
 // Define the base URL for the plugin.
-define('PLUGIN_ACTION_SAFETY_FEATURE_URL', plugin_dir_url(__FILE__));
+define('ACTION_SAFETY_FEATURE_URL', plugin_dir_url(__FILE__));
 
 // Automatically include class files from the 'includes' directory
 $includes_dir = plugin_dir_path(__FILE__) . 'includes/';

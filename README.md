@@ -1,5 +1,5 @@
 
-# WordPress Plugin Actions Safety Feature
+# WordPress Actions Safety Feature
 Contributors: dalbeck\
 Tested: 6.4.1\
 Stable tag: 1.2.0\
@@ -77,7 +77,7 @@ add_filter('da_mission_critical_plugins', 'my_custom_critical_plugins');
 ![Plugin Action Log](screenshots/screenshot-plugin-action-log-multi.png)
 ## Optimizations
 
-All scripts are programmed to only load on the `plugins.php` and `/wp-admin/plugins.php?page=plugin-action-log` screens within WP Admin Dashboard. The database table created for the plugin is indexed, and all queries will only execute when necessary between these two URLs.
+All scripts are programmed to only load on the `plugins.php` and `/wp-admin/plugins.php?page=plugin-action-log` screens within WP Admin Dashboard. The database table created for the plugin is indexed, and all queries will only execute when necessary between these two URLs. On plugin deletion, all data created by the plugin will be removed from the database.
 
 
 ## Support

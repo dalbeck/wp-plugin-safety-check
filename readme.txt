@@ -1,13 +1,9 @@
 
-# WordPress Plugin Actions Safety Feature
+# WordPress Actions Safety Feature
 Contributors: dalbeck
-
 Tested: 6.4.1
-
 Stable tag: 1.2.0
-
 License: GPLv3 or later
-
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 This is a WordPress plugin that introduces a warning modal for critical plugin activations/deactivations, logs these actions for accountability, and supports CSV exports of the log. It also includes a purging feature for log management and protects mission-critical plugins from accidental deactivation, including bulk action prevention. Optionally extendable for custom purge timelines and modal timeouts.
@@ -27,8 +23,6 @@ This is a WordPress plugin that introduces a warning modal for critical plugin a
 - Confirmation modal appears for any plugin activation/deactivation.
 - View the plugin actions log under 'Plugins > Plugin Action Log' in the dashboard.
 - Export the log using the 'Export to CSV' button on the Plugin Action Log page.
-
-
 
 ## Customizations
 
@@ -83,7 +77,7 @@ add_filter('da_mission_critical_plugins', 'my_custom_critical_plugins');
 ![Plugin Action Log](screenshots/screenshot-plugin-action-log-multi.png)
 ## Optimizations
 
-All scripts are programmed to only load on the `plugins.php` and `/wp-admin/plugins.php?page=plugin-action-log` screens within WP Admin Dashboard. The database table created for the plugin is indexed, and all queries will only execute when necessary between these two URLs.
+All scripts are programmed to only load on the `plugins.php` and `/wp-admin/plugins.php?page=plugin-action-log` screens within WP Admin Dashboard. The database table created for the plugin is indexed, and all queries will only execute when necessary between these two URLs. On plugin deletion, all data created by the plugin will be removed from the database.
 
 
 ## Support
