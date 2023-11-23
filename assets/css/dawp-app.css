@@ -81,6 +81,7 @@
 #cancel-action {
     background: green;
     border: none;
+    border-radius: 5px;
     color: white;
     padding: 10px 20px;
     margin-right: 10px;
@@ -99,7 +100,7 @@
 #cancel-countdown {
     display: none;
     margin-top: 20px;
-    color: red;
+    color: rgb(244, 23, 0);
     font-size: 15px;
     font-weight: bold;
     cursor: pointer;
@@ -111,5 +112,5 @@
 }
 
 #proceed-action.deactivate {
-    background: red;
+    background: rgb(244, 23, 0);
 }
