@@ -34,6 +34,9 @@ $results = LogSearch::search($search, $per_page, $paged);
         // Call to CSV Exporter
         $csvExporter = new LogCSVExporter();
         $csvExporter->exportButton();
+
+        // Call to LogPurger
+        LogPurger::render_purge_options_html();
     ?>
     <table class="wp-list-table widefat fixed striped">
         <thead>

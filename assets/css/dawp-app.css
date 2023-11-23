@@ -114,3 +114,9 @@
 #proceed-action.deactivate {
     background: rgb(244, 23, 0);
 }
+
+/* Log Tabke Styles */
+
+.wp-list-table {
+    margin-top: 10px;
+}
