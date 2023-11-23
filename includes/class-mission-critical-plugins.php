@@ -19,8 +19,7 @@ class MissionCriticalPlugins
     {
         // Default critical plugins
         $critical_plugins = [
-            'advanced-custom-fields-pro/acf.php',
-            'gravityforms/gravityforms.php',
+            'wp-plugin-safety-check/wp-plugin-safety-feature.php'
         ];
 
         /**

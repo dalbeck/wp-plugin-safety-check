@@ -2,13 +2,13 @@
 
 /**
  * Plugin Name: Plugin Actions Safety Feature
- * Description: Adds a warning modal when a user clicks the deactivate or activate link for a plugin...
+ * Description: Enhance plugin management safety on WordPress sites with the Plugin Actions Safety Feature. This plugin introduces a warning modal for critical plugin activations/deactivations, logs these actions for accountability, and supports CSV exports of the log. It also includes a purging feature for log management and protects mission-critical plugins from accidental deactivation, including bulk action prevention. Optionally extendable for custom purge timelines and modal timeouts.
  * Author: Danny Albeck
- * Author URI: https://www.albeckconsulting.com
+ * Author URI: https://github.com/dalbeck/
  * Version: 1.2.0
  * Text Domain: plugin-actions-safety-feature
  * Domain Path: /languages
- * License: GPLv3
+ * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
  *
