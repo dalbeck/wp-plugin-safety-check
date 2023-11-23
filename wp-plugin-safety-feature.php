@@ -5,7 +5,7 @@
  * Description: Adds a warning modal when a user clicks the deactivate or activate link for a plugin...
  * Author: Danny Albeck
  * Author URI: https://www.albeckconsulting.com
- * Version: 1.1.0
+ * Version: 1.2.0
  * Text Domain: plugin-actions-safety-feature
  * Domain Path: /languages
  */
@@ -16,7 +16,7 @@ if (!defined('WPINC')) {
 }
 
 // Define plugin version constant.
-define('PLUGIN_ACTION_SAFETY_FEATURE_VERSION', '1.1.0');
+define('PLUGIN_ACTION_SAFETY_FEATURE_VERSION', '1.2.0');
 
 // Define the base URL for the plugin.
 define('PLUGIN_ACTION_SAFETY_FEATURE_URL', plugin_dir_url(__FILE__));
