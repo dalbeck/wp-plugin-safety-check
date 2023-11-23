@@ -4,7 +4,6 @@ namespace DA\PluginActionsSafetyFeature;
 
 class PluginActionSafety
 {
-
     /**
      * Run the plugin.
      */
@@ -46,6 +45,12 @@ class PluginActionSafety
         // Enqueue csvexport.js only on the plugin action log page
         if ($pagenow == 'plugins.php' && isset($_GET['page']) && $_GET['page'] == 'plugin-action-log') {
             wp_enqueue_script('dawp-csv-export', PLUGIN_ACTION_SAFETY_FEATURE_URL . 'assets/js/dawp-csvexport.js', array(), PLUGIN_ACTION_SAFETY_FEATURE_VERSION, true);
+
+            wp_enqueue_script('dawp-log-purge', PLUGIN_ACTION_SAFETY_FEATURE_URL . 'assets/js/dawp-logPurger.js', array(), PLUGIN_ACTION_SAFETY_FEATURE_VERSION, true);
+            wp_localize_script('dawp-log-purge', 'dawpPurgeData', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('dawp_purge_nonce')
+            ));
         }
 
         // Enqueue styles on both pages
