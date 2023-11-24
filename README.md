@@ -34,6 +34,12 @@ add_filter('dawp_modal_timeout', function($timeout) {
     return 15000; // New timeout in milliseconds
 });
 ```
+
+### Disable Modal Timer
+```php
+add_filter('dawp_disable_modal_timer', '__return_true');
+```
+
 ### Adjust Action Log Pagination
 ```php
 add_filter('dawp_log_pagination_count', function($count) {
@@ -51,8 +57,6 @@ function my_custom_critical_plugins($critical_plugins) {
 }
 add_filter('da_mission_critical_plugins', 'my_custom_critical_plugins');
 ```
-
-
 ## Screenshots
 
 #### Mission Critical Plugin

@@ -50,17 +50,21 @@ document.addEventListener('DOMContentLoaded', function() {
             cancelAction.style.display = 'none';
             this.style.display = 'none';
 
-            var countdown = modalTimeout / 1000;
-            countdownMessage.textContent = 'Plugin ' + action + ' will complete in ' + countdown + ' seconds';
-            countdownMessage.style.display = 'block';
-            cancelCountdown.style.display = 'block';
-
-            countdownInterval = setInterval(function() {
-                countdown--;
+            if (dawpModalData.timerDisabled) {
+                // Timer is disabled, directly proceed with action
+                window.location.href = actionUrl;
+            } else {
+                var countdown = modalTimeout / 1000;
                 countdownMessage.textContent = 'Plugin ' + action + ' will complete in ' + countdown + ' seconds';
-                if (countdown <= 0) {
-                    clearInterval(countdownInterval);
-                    // AJAX request
+                countdownMessage.style.display = 'block';
+                cancelCountdown.style.display = 'block';
+
+                countdownInterval = setInterval(function() {
+                    countdown--;
+                    countdownMessage.textContent = 'Plugin ' + action + ' will complete in ' + countdown + ' seconds';
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        // AJAX request
                         fetch(dawpModalData.ajax_url, {
                             method: 'POST',
                             headers: {
@@ -80,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     }
                 }, 1000);
+            }
         });
 
         // If the user chooses to cancel the countdown
