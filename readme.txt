@@ -35,6 +35,12 @@ add_filter('dawp_modal_timeout', function($timeout) {
     return 15000; // New timeout in milliseconds
 });
 ```
+
+### Disable Modal Timer
+```php
+add_filter('dawp_disable_modal_timer', '__return_true');
+```
+
 ### Adjust Action Log Pagination
 ```php
 add_filter('dawp_log_pagination_count', function($count) {

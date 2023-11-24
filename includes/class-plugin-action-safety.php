@@ -32,13 +32,15 @@ class PluginActionSafety
         // Enqueue modal.js only on the plugins.php page
         if ($pagenow == 'plugins.php' && empty($_GET['page'])) {
             $modal_timeout = apply_filters('dawp_modal_timeout', 10000); // Default is 10000 milliseconds
+            $modal_timer_disabled = apply_filters('dawp_disable_modal_timer', false); // Default is false
 
             wp_enqueue_script('dawp-modal', ACTION_SAFETY_FEATURE_URL . 'assets/js/dawp-modal.js', null, ACTION_SAFETY_FEATURE_VERSION, true);
 
             wp_localize_script('dawp-modal', 'dawpModalData', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('wp_nonce_action'),
-                'timeout' => $modal_timeout
+                'timeout' => $modal_timeout,
+                'timerDisabled' => $modal_timer_disabled
             ));
         }
 
