@@ -2,7 +2,7 @@
 # WordPress Actions Safety Feature
 Contributors: dalbeck\
 Tested: 6.4.1\
-Stable tag: 1.2.0\
+Stable tag: 1.2.2\
 License: GPLv3 or later\
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -15,7 +15,7 @@ This is a WordPress plugin that introduces a warning modal for critical plugin a
 - **Log Purge:** Ability to purge database log to prevent bloat over time.
 - **Log Search:** Ability to search the log by user ID, user email, plugin name and plugin action.
 - **Critical Plugin Protection**: Disables deactivation links for specified essential plugins, and also prevent workaround of bulk actions.
-- **Extensibility**: Offers hooks to modify modal timeout, critical plugin list, and modify pagination of action log.
+- **Extensibility**: Offers hooks to modify modal timeout, disable modal timeout, set critical plugin list, and modify pagination of action log.
 
 ## Usage
 
