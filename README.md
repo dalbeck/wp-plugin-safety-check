@@ -1,5 +1,5 @@
 
-# WordPress Actions Safety Feature
+# Actions Safety Feature
 Contributors: dalbeck\
 Tested: 6.4.1\
 Stable tag: 1.2.2\

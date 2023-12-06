@@ -16,7 +16,6 @@ namespace DA\PluginActionsSafetyFeature;
  *
  * @package DA\PluginActionsSafetyFeature
  */
-
 class LogPurger
 {
     /**
@@ -24,7 +23,8 @@ class LogPurger
      *
      * @return void
      */
-    public static function render_purge_options_html() {
+    public static function render_purge_options_html()
+    {
         echo '<select id="log-purge-options">
                   <option value="purge_all">Purge All</option>
                   <option value="purge_except_last_30_days">Purge All Except Last 30 Days</option>
@@ -35,7 +35,8 @@ class LogPurger
     /**
      * Handles the AJAX request for purging log entries.
      */
-    public static function handle_log_purge_request() {
+    public static function handle_log_purge_request()
+    {
         check_ajax_referer('dawp_purge_nonce', 'nonce');
 
         $purge_option = sanitize_text_field($_POST['purge_option']);
@@ -55,7 +56,15 @@ class LogPurger
     protected static function purge_all_logs() {
         global $wpdb;
         $table_name = $wpdb->prefix . 'plugin_actions_log';
-        $wpdb->query("TRUNCATE TABLE `$table_name`");
+
+        // Ensure the table name is valid
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name)) === $table_name) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $wpdb->query("TRUNCATE TABLE `{$table_name}`");
+        } else {
+            // Handle the error - table name is not valid
+            error_log("Error: Attempted to truncate an invalid table: {$table_name}");
+        }
     }
 
     /**
@@ -64,8 +73,14 @@ class LogPurger
     protected static function purge_except_last_30_days() {
         global $wpdb;
         $table_name = $wpdb->prefix . 'plugin_actions_log';
-        $wpdb->query("DELETE FROM `$table_name` WHERE timestamp < NOW() - INTERVAL 30 DAY");
+
+        // Calculate the date 30 days ago in MySQL format
+        $date_30_days_ago = gmdate('Y-m-d H:i:s', strtotime(current_time('mysql') . ' -30 days'));
+
+        // Use $wpdb->delete for a safe query execution
+        $wpdb->delete($table_name, array('timestamp' => $date_30_days_ago), array('%s'));
     }
+
 }
 
 // Register AJAX actions

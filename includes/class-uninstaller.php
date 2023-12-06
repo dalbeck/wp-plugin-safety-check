@@ -26,6 +26,8 @@ class Uninstaller
         // Remove the plugin's database table
         $table_name = $wpdb->prefix . 'plugin_actions_log';
         $sql = "DROP TABLE IF EXISTS {$table_name};";
+
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $wpdb->query($sql);
 
         // Delete any options or transients related to the plugin

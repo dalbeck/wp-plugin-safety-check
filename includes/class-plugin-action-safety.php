@@ -27,10 +27,8 @@ class PluginActionSafety
      */
     public function enqueue_scripts($hook)
     {
-        global $pagenow;
-
         // Enqueue modal.js only on the plugins.php page
-        if ($pagenow == 'plugins.php' && empty($_GET['page'])) {
+        if ('plugins.php' === $hook) {
             $modal_timeout = apply_filters('dawp_modal_timeout', 10000); // Default is 10000 milliseconds
             $modal_timer_disabled = apply_filters('dawp_disable_modal_timer', false); // Default is false
 
@@ -44,19 +42,19 @@ class PluginActionSafety
             ));
         }
 
-        // Enqueue csvexport.js only on the plugin action log page
-        if ($pagenow == 'plugins.php' && isset($_GET['page']) && $_GET['page'] == 'plugin-action-log') {
+        // Enqueue csvexport.js and dawp-log-purge.js only on the plugin action log page
+        if ('plugins_page_plugin-action-log' === $hook) {
             wp_enqueue_script('dawp-csv-export', ACTION_SAFETY_FEATURE_URL . 'assets/js/dawp-csvexport.js', array(), ACTION_SAFETY_FEATURE_VERSION, true);
-
             wp_enqueue_script('dawp-log-purge', ACTION_SAFETY_FEATURE_URL . 'assets/js/dawp-logPurger.js', array(), ACTION_SAFETY_FEATURE_VERSION, true);
+
             wp_localize_script('dawp-log-purge', 'dawpPurgeData', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('dawp_purge_nonce')
             ));
         }
 
-        // Enqueue styles on both pages
-        if ($pagenow == 'plugins.php' && (empty($_GET['page']) || $_GET['page'] == 'plugin-action-log')) {
+        // Enqueue styles on the plugins page and the plugin action log page
+        if ('plugins.php' === $hook || 'plugins_page_plugin-action-log' === $hook) {
             wp_enqueue_style('dawp-custom-style', ACTION_SAFETY_FEATURE_URL . 'assets/css/dawp-app.css', array(), ACTION_SAFETY_FEATURE_VERSION);
         }
     }
