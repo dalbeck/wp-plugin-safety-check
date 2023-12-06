@@ -19,7 +19,7 @@ class MissionCriticalPlugins
     {
         // Default critical plugins
         $critical_plugins = [
-            'wp-action-safety-check/wp-action-safety-feature.php'
+            'actions-safety-feature/actions-safety-feature.php'
         ];
 
         /**
@@ -55,8 +55,11 @@ class MissionCriticalPlugins
      */
     public static function prevent_bulk_action_on_critical_plugins()
     {
-        // Check if the current request is a bulk action on the plugins page
-        if (isset($_POST['action']) && $_POST['action'] === 'deactivate-selected' && isset($_POST['checked'])) {
+        // Check the nonce for bulk actions on the plugins page
+        if (isset($_POST['_wpnonce'], $_POST['action'], $_POST['checked']) &&
+            wp_verify_nonce($_POST['_wpnonce'], 'bulk-plugins') &&
+            $_POST['action'] === 'deactivate-selected') {
+
             $critical_plugins = self::get_critical_plugins();
             $intersect = array_intersect($_POST['checked'], $critical_plugins);
 

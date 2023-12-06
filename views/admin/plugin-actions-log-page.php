@@ -15,15 +15,25 @@ global $wpdb;
 $table_name = $wpdb->prefix . 'plugin_actions_log';
 
 // Get the current page number and number of items per page
-$paged = isset($_GET['paged']) ? max(0, intval($_GET['paged']) - 1) : 0;
+if (isset($_GET['paged']) && isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'plugin_actions_log_paging')) {
+    $paged = max(0, intval($_GET['paged']) - 1);
+} else {
+    $paged = 0;
+}
 $per_page = get_option('dawp_plugin_actions_log_per_page', 10);
 
-$search = isset($_POST['s']) ? sanitize_text_field($_POST['s']) : '';
+if (isset($_POST['plugin_action_log_nonce']) && wp_verify_nonce($_POST['plugin_action_log_nonce'], 'plugin_action_log_search_nonce')) {
+    $search = isset($_POST['s']) ? sanitize_text_field($_POST['s']) : '';
+} else {
+    $search = '';
+}
+
 $results = LogSearch::search($search, $per_page, $paged);
 ?>
 <div class="wrap">
     <h1>Plugin Action Log</h1>
     <form method="post">
+        <?php wp_nonce_field('plugin_action_log_search_nonce', 'plugin_action_log_nonce'); ?>
         <p class="search-box">
             <label class="screen-reader-text" for="plugin-search-input">Search Plugin Action Log:</label>
             <input type="search" id="plugin-search-input" name="s" value="<?php echo esc_attr($search); ?>">
@@ -62,5 +72,5 @@ $results = LogSearch::search($search, $per_page, $paged);
     </table>
     <?php
     LogPagination::render($table_name);
-?>
+    ?>
 </div>

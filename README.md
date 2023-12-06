@@ -1,8 +1,8 @@
 
-# WordPress Actions Safety Feature
+# Actions Safety Feature
 Contributors: dalbeck\
 Tested: 6.4.1\
-Stable tag: 1.2.2\
+Stable tag: 1.2.3\
 License: GPLv3 or later\
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
